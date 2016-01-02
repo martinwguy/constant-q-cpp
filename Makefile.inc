@@ -25,10 +25,12 @@ LDFLAGS := $(LDFLAGS)
 PLUGIN_LDFLAGS := $(LDFLAGS) $(PLUGIN_LDFLAGS)
 TEST_LDFLAGS := $(LDFLAGS) -lboost_unit_test_framework
 PF_LDFLAGS := $(LDFLAGS) -lsndfile
+SG_LDFLAGS := $(LDFLAGS) -lsndfile -lpng
 
 LIB	:= libcq.a
 PLUGIN	:= cqvamp$(PLUGIN_EXT)
 PF	:= $(TEST_DIR)/processfile
+SG	:= $(TEST_DIR)/spectrogram
 
 LIB_HEADERS	:= \
 	$(INC_DIR)/CQBase.h \
@@ -96,11 +98,14 @@ TEST_TARGETS	:= $(TEST_SOURCES:.cpp=)
 PF_SOURCES := $(TEST_DIR)/processfile.cpp
 PF_OBJECTS := $(PF_SOURCES:.cpp=.o) $(OBJECTS)
 
+SG_SOURCES := $(TEST_DIR)/spectrogram.cpp
+SG_OBJECTS := $(SG_SOURCES:.cpp=.o) $(OBJECTS)
+
 LIBS	:= $(VAMPSDK_DIR)/libvamp-sdk.a -lpthread
 
 default:   all
 
-all:	   libs $(PF) test
+all:	   libs $(PF) $(SG) test
 
 libs:	   $(LIB) $(PLUGIN)
 
@@ -113,6 +118,9 @@ $(PLUGIN):	$(OBJECTS)
 $(PF):	$(PF_OBJECTS)
 	$(CXX) -o $@ $^ $(LIBS) $(PF_LDFLAGS)
 
+$(SG):	$(SG_OBJECTS)
+	$(CXX) -o $@ $^ $(LIBS) $(SG_LDFLAGS)
+
 $(LIB):	$(LIB_OBJECTS)
 	$(RM) -f $@
 	$(AR) cr $@ $^
@@ -122,13 +130,13 @@ $(TEST_DIR)/Test%:	$(TEST_DIR)/Test%.o
 	$(CXX) -o $@ $^ $(LIB) $(LIBS) $(TEST_LDFLAGS)
 
 clean:		
-	rm -f $(OBJECTS) $(TEST_OBJECTS) $(PF_OBJECTS)
+	rm -f $(OBJECTS) $(TEST_OBJECTS) $(PF_OBJECTS) $(SG_OBJECTS)
 
 distclean:	clean
 	rm -f $(PLUGIN) $(TEST_TARGETS)
 
 depend:
-	makedepend -Y -fMakefile.inc $(SOURCES) $(TEST_SOURCES) $(PF_SOURCES) $(HEADERS)
+	makedepend -Y -fMakefile.inc $(SOURCES) $(TEST_SOURCES) $(PF_SOURCES) $(SG_SOURCES) $(HEADERS)
 
 # DO NOT DELETE
 
