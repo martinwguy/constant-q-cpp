@@ -40,6 +40,7 @@ int main(int argc, char **argv)
     int bpo = 0;
     bool help = false;
     CQSpectrogram::Interpolation interpolation = CQSpectrogram::InterpolateLinear;
+    CQParameters::WindowType window = CQParameters::Hann;
 
     // How many output columns have process() and getRemaining() returned to us?
     int columnsReceived = 0;
@@ -56,11 +57,12 @@ int main(int argc, char **argv)
 	    { "maxamp", 1, 0, 'm', },
 	    { "bpo", 1, 0, 'b' },
 	    { "interpolation", 1, 0, 'i' },
+	    { "window", 1, 0, 'w' },
 	    { 0, 0, 0, 0 },
 	};
 
 	c = getopt_long(argc, argv,
-			"hx:n:m:b:i:",
+			"hx:n:m:b:i:w:",
 			longOpts, &optionIndex);
 	if (c == -1) break;
 
@@ -74,6 +76,15 @@ int main(int argc, char **argv)
 		  case 'h': interpolation = CQSpectrogram::InterpolateHold; break;
 		  case 'l': interpolation = CQSpectrogram::InterpolateLinear; break;
 		  case 'z': interpolation = CQSpectrogram::InterpolateZeros; break;
+		  default: help = true; break;
+		  } break;
+	case 'w': switch (optarg[0]) {
+		  case 'n': window = CQParameters::Hann; break;
+		  case 'k': window = CQParameters::Blackman; break;
+		  case 'h': window = CQParameters::BlackmanHarris; break;
+		  case 'N': window = CQParameters::SqrtHann; break;
+		  case 'K': window = CQParameters::SqrtBlackman; break;
+		  case 'H': window = CQParameters::SqrtBlackmanHarris; break;
 		  default: help = true; break;
 		  } break;
 	default: help = true; break;
@@ -91,6 +102,8 @@ int main(int argc, char **argv)
 	cerr << "  -b<X>, --bpo <X>      Bins per octave   (default = 60)" << endl;
 	cerr << "  -i<X>, --interpolation <X>" << endl;
 	cerr << "                        Interpolation type: h = Hold, l = Linear, Z = Zeros" << endl;
+	cerr << "  -w<X>, --window <X>   Window type n = Hann, k = Blackman, h = BlackmanHarris" << endl;
+	cerr << "                        Use N, K and H for the square root of the above." << endl;
 	cerr << "  -h, --help            Print this help" << endl;
 	cerr << endl;
 	cerr << "This program performs a Constant-Q spectrogram with the" << endl;
@@ -123,7 +136,7 @@ int main(int argc, char **argv)
     if (bpo == 0) bpo = 60;
 
     CQParameters params(sfinfo.samplerate, minFreq, maxFreq, bpo);
-    params.window = CQParameters::Hann;
+    params.window = window;
     CQSpectrogram cq(params, interpolation);
 
 #if 0
