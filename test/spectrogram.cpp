@@ -113,7 +113,7 @@ int main(int argc, char **argv)
 	cerr << "  -n<X>, --minfreq <X>  Minimum frequency (default = 100, actual min may vary)" << endl;
 	cerr << "  -d<X>, --dynrange <X> Dynamic range of output in dB (default: 100)" << endl;
 	cerr << "  -a<X>, --atomhopfactor <X> Atom hop factor (default = 0.25)" << endl;
-	cerr << "  -b<X>, --bpo <X>      Bins per octave   (default = 60)" << endl;
+	cerr << "  -b<X>, --bpo <X>      Bins per octave   (default = 96)" << endl;
 	cerr << "  -i<X>, --interpolation <X>" << endl;
 	cerr << "                        Interpolation type: h = Hold, l = Linear, Z = Zeros" << endl;
 	cerr << "  -w<X>, --window <X>   Window type n = Hann, k = Blackman, h = BlackmanHarris" << endl;
@@ -145,9 +145,9 @@ int main(int argc, char **argv)
     int channels = sfinfo.channels;
     float *fbuf = new float[channels * ibs];
 
-    if (maxFreq == 0.0) maxFreq = sfinfo.samplerate / 3;
-    if (minFreq == 0.0) minFreq = 100;
-    if (bpo == 0) bpo = 60;
+    if (maxFreq == 0.0) maxFreq = 14080;
+    if (minFreq == 0.0) minFreq = 27.5;
+    if (bpo == 0) bpo = 96;
 
     CQParameters params(sfinfo.samplerate, minFreq, maxFreq, bpo);
     params.window = window;
