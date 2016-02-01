@@ -37,6 +37,7 @@ int main(int argc, char **argv)
     double maxFreq = 0;
     double minFreq = 0;
     double maxAmp = 1.0;
+    double atomHopFactor = 0.0; /* If 0, not given as a parameter */
     int bpo = 0;
     bool help = false;
     CQSpectrogram::Interpolation interpolation = CQSpectrogram::InterpolateLinear;
@@ -55,6 +56,7 @@ int main(int argc, char **argv)
 	    { "maxfreq", 1, 0, 'x', },
 	    { "minfreq", 1, 0, 'n', },
 	    { "maxamp", 1, 0, 'm', },
+	    { "atomhopfactor", 1, 0, 'a', },
 	    { "bpo", 1, 0, 'b' },
 	    { "interpolation", 1, 0, 'i' },
 	    { "window", 1, 0, 'w' },
@@ -62,7 +64,7 @@ int main(int argc, char **argv)
 	};
 
 	c = getopt_long(argc, argv,
-			"hx:n:m:b:i:w:",
+			"hx:n:m:a:b:i:w:",
 			longOpts, &optionIndex);
 	if (c == -1) break;
 
@@ -71,6 +73,7 @@ int main(int argc, char **argv)
 	case 'x': maxFreq = atof(optarg); break;
 	case 'n': minFreq = atof(optarg); break;
 	case 'm': maxAmp = atof(optarg); break;
+	case 'a': atomHopFactor = atof(optarg); break;
 	case 'b': bpo = atoi(optarg); break;
 	case 'i': switch (optarg[0]) {
 		  case 'h': interpolation = CQSpectrogram::InterpolateHold; break;
@@ -99,6 +102,7 @@ int main(int argc, char **argv)
 	cerr << "  -x<X>, --maxfreq <X>  Maximum frequency (default = sample rate / 3)" << endl;
 	cerr << "  -n<X>, --minfreq <X>  Minimum frequency (default = 100, actual min may vary)" << endl;
 	cerr << "  -m<X>, --maxamp <X>   Predited maximum output value (default = 1.0)" << endl;
+	cerr << "  -a<X>, --atomhopfactor <X> Atom hop factor (default = 0.25)" << endl;
 	cerr << "  -b<X>, --bpo <X>      Bins per octave   (default = 60)" << endl;
 	cerr << "  -i<X>, --interpolation <X>" << endl;
 	cerr << "                        Interpolation type: h = Hold, l = Linear, Z = Zeros" << endl;
@@ -137,6 +141,7 @@ int main(int argc, char **argv)
 
     CQParameters params(sfinfo.samplerate, minFreq, maxFreq, bpo);
     params.window = window;
+    if (atomHopFactor != 0.0) params.atomHopFactor = atomHopFactor;
     CQSpectrogram cq(params, interpolation);
 
 #if 0
