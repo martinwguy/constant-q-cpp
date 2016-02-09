@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 	cerr << "  -a<X>, --atomhopfactor <X> Atom hop factor (default = 0.25)" << endl;
 	cerr << "  -b<X>, --bpo <X>      Bins per octave   (default = 96)" << endl;
 	cerr << "  -i<X>, --interpolation <X>" << endl;
-	cerr << "                        Interpolation type: h = Hold, l = Linear, Z = Zeros" << endl;
+	cerr << "                        Interpolation type: h = Hold, l = Linear, z = Zeros" << endl;
 	cerr << "  -w<X>, --window <X>   Window type n = Hann, k = Blackman, h = BlackmanHarris" << endl;
 	cerr << "                        Use N, K and H for the square root of the above." << endl;
 	cerr << "  -h, --help            Print this help" << endl;
